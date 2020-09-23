@@ -11,5 +11,11 @@ namespace Context.Relations
 
         public virtual User User { get; set; }
         public virtual Subject Subject { get; set; }
+
+        public UserSubject(string idUser, int idSubject)
+        {
+            IdUser = idUser;
+            IdSubject = idSubject;
+        }
     }
 }

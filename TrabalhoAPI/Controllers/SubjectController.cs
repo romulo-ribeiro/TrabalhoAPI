@@ -79,13 +79,9 @@ namespace TrabalhoAPI.Controllers
                         return BadRequest(result);
                     }
 
-                    subject.Allocation.Add(new UserSubject()
-                    {
-                        Subject = subject,
-                        User = student,
-                    });
-
+                    subject.Allocation.Add(new UserSubject(idStudent,idSubject));
                     db.SaveChanges();
+
                     result.Error = false;
                     result.Status = HttpStatusCode.OK;
                     result.Data = db.Materia.ToList();
@@ -121,13 +117,9 @@ namespace TrabalhoAPI.Controllers
                         return BadRequest(result);
                     }
 
-                    subject.Allocation.Add(new UserSubject()
-                    {
-                        Subject = subject,
-                        User = professor,
-                    });
-
+                    subject.Allocation.Add(new UserSubject(idProfessor,idSubject));
                     db.SaveChanges();
+
                     result.Error = false;
                     result.Status = HttpStatusCode.OK;
                     result.Data = db.Materia.ToList();

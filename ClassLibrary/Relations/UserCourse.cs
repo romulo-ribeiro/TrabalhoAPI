@@ -10,5 +10,11 @@ namespace Context.Relations
 
         public virtual Course Course { get; set; }
         public virtual User User { get; set; }
+
+        public UserCourse(string idUser, int idCourse)
+        {
+            IdUser = idUser;
+            IdCourse = idCourse;
+        }
     }
 }

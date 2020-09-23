@@ -76,11 +76,7 @@ namespace TrabalhoAPI.Controllers
                     throw new ArgumentException("Materia com Status 'INATIVO' não pode ser adicionada ao curso.");
                 }
 
-                course.Enrollments.Add(new CourseSubject()
-                {
-                    Subject = subject,
-                    Course = course
-                });
+                course.Enrollments.Add(new CourseSubject(courseId,subjectId));
 
                 db.SaveChanges();
 
@@ -126,18 +122,13 @@ namespace TrabalhoAPI.Controllers
                         throw new ArgumentException("Curso com Status 'INATIVO' não pode receber novos alunos.");
                     }
 
-                    course.CourseContains.Add(new UserCourse()
-                    {
-                        User = student,
-                        Course = course
-                    });
-
+                    course.CourseContains.Add(new UserCourse(studentId,courseId));
                     db.SaveChanges();
 
                     result.Error = false;
                     result.Message.Add("Aluno adicionado com sucesso");
                     result.Status = HttpStatusCode.OK;
-                    result.Data = db.Curso.Include(q => q.Enrollments).ToList();
+                    result.Data = db.Curso.Include(q => q.CourseContains).ToList();
                     return Ok(result);
 
                 }

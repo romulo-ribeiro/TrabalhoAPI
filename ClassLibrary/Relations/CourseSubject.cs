@@ -10,5 +10,11 @@ namespace Context.Relations
 
         public virtual Course Course { get; set; }
         public virtual Subject Subject { get; set; }
+
+        public CourseSubject(int idCourse, int idSubject)
+        {
+            IdCourse = idCourse;
+            IdSubject = idSubject;
+        }
     }
 }

@@ -37,6 +37,5 @@ namespace Context.Models
         public virtual ICollection<UserCourse> InCourse { get; set; } = new HashSet<UserCourse>();
         public virtual ICollection<UserSubject> Registered { get; set; } = new HashSet<UserSubject>();
 
-
     }
 }
