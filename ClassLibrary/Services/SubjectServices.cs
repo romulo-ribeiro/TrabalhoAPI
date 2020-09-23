@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace Context.Services
 {
-    class SubjectServices
+    public class SubjectServices
     {
         public static bool ValidateDate(string dateStr, out DateTime date)
         {
