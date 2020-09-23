@@ -9,6 +9,5 @@ namespace Context.Enum
     {
         Active,
         Inactive,
-        Discontinued,
     }
 }

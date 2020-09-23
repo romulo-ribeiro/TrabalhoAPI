@@ -66,31 +66,75 @@ namespace TrabalhoAPI.Controllers
 
         [HttpPost]
         [Route("AddSubject")]
-        public ActionResult AddSubject(string course_name, string subject_name)
+        public ActionResult AddSubject(int courseId, int subjectId)
         {
             var result = new ResultData<Course>() { Error = true, Status = HttpStatusCode.BadRequest };
             using (db)
             {
                 try
                 {
-                    var cursos = db.Curso.ToList();
-                    var materias = db.Materia.ToList();
-                    var curso = cursos.Where(q => q.Name.ToLower() == course_name.ToLower()).Select(q => q).FirstOrDefault();
-                    var materia = materias.Where(q => q.Name.ToLower() == subject_name.ToLower()).Select(q => q).FirstOrDefault();
+                    var course = db.Curso.Where(q => q.IdCourse == courseId).FirstOrDefault();
+                    var subject = db.Materia.Where(q => q.IdSubject == subjectId).FirstOrDefault();
 
-                    if (curso == null || materia == null)
+                    if (course == null || subject == null)
                     {
                         throw new ArgumentException("Item não encontrado");
                     }
-                    if (materia.Status == SubjectStatus.Past || materia.Status == SubjectStatus.Discontinued)
+                    if (subject.Status == SubjectStatus.Inactive)
                     {
-                        throw new ArgumentException("Materia com Status 'INATIVO', não pode ser adicionada ao curso!");
+                        throw new ArgumentException("Materia com Status 'INATIVO' não pode ser adicionada ao curso.");
                     }
 
-                    curso.Enrollments.Add(new CourseSubject()
+                    course.Enrollments.Add(new CourseSubject()
                     {
-                        Subject = materia,
-                        Course = curso
+                        Subject = subject,
+                        Course = course
+                    });
+
+                    db.SaveChanges();
+
+                    result.Error = false;
+                    result.Message.Add("Matéria adicionada com sucesso");
+                    result.Status = HttpStatusCode.OK;
+                    result.Data = db.Curso.Include(q => q.Enrollments).ToList();
+                    return Ok(result);
+
+                }
+                catch (Exception e)
+                {
+                    result.Error = true;
+                    result.Message.Add(e.Message);
+                    result.Status = HttpStatusCode.BadRequest;
+                    return BadRequest(result);
+                }
+            }
+        }
+
+        [HttpPost]
+        [Route("AddStudent")]
+        public ActionResult AddStudent(int courseId, string studentId)
+        {
+            var result = new ResultData<Course>() { Error = true, Status = HttpStatusCode.BadRequest };
+            using (db)
+            {
+                try
+                {
+                    var course = db.Curso.Where(q => q.IdCourse == courseId).FirstOrDefault();
+                    var student = db.Usuario.Where(q => q.IdUser == studentId && q.Role == Occupation.Student).FirstOrDefault();
+
+                    if (course == null || student == null)
+                    {
+                        throw new ArgumentException("Item não encontrado");
+                    }
+                    if (course.Status == CourseStatus.Inactive)
+                    {
+                        throw new ArgumentException("Curso com Status 'INATIVO' não pode receber novos alunos.");
+                    }
+
+                    course.CourseContains.Add(new UserCourse()
+                    {
+                        User = student,
+                        Course = course
                     });
 
                     db.SaveChanges();

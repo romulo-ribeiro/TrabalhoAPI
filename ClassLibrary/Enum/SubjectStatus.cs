@@ -6,9 +6,7 @@ namespace Context.Enum
 {
     public enum SubjectStatus
     {
-        Current = 0,
-        Future = 1,
-        Past = 2,
-        Discontinued = 3,
+        Active = 0,
+        Inactive = 1,
     }
 }

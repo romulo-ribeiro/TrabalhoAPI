@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerUI;
+using System.Text.Json.Serialization;
 
 namespace TrabalhoAPI
 {
@@ -23,20 +24,20 @@ namespace TrabalhoAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSwaggerGen(c =>
-
             {
-
                 c.SwaggerDoc("v1", new OpenApiInfo
-
                 {
-
                     Title = "Escola Padawan",
-
                     Version = "v1",
-
                 });
+                c.DescribeAllEnumsAsStrings();
 
             });
+            services
+            .AddControllersWithViews()
+            .AddJsonOptions(options =>
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+
             services.AddControllers();
             services.AddDbContext<EscolaContext>(op => op.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
         }
