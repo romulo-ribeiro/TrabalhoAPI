@@ -9,8 +9,10 @@ namespace Context.Types
     {
         public void Configure(EntityTypeBuilder<CourseSubject> builder)
         {
-            builder.HasKey(q => q.IdCourse);
-            builder.HasKey(q => q.IdSubject);
+            builder.HasKey(q => q.Id);
+
+            builder.HasAlternateKey(q => q.IdCourse);
+            builder.HasAlternateKey(q => q.IdSubject);
         }
     }
 

@@ -4,6 +4,7 @@ namespace Context.Relations
 {
     public class CourseSubject
     {
+        public int Id { get; set; }
         public int IdCourse { get; set; }
         public int IdSubject { get; set; }
 

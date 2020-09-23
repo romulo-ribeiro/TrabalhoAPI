@@ -11,6 +11,7 @@ namespace Context.Types
         {
             builder.HasKey(q => q.IdUser);
 
+            builder.Property(q => q.IdUser).HasMaxLength(5);
             builder.Property(q => q.Name).HasMaxLength(100);
             builder.Property(q => q.Surname).HasMaxLength(100);
             builder.Property(q => q.Cpf).HasMaxLength(11);

@@ -40,7 +40,7 @@ namespace Context.Migrations
                 name: "Usuario",
                 columns: table => new
                 {
-                    IdUser = table.Column<string>(nullable: false),
+                    IdUser = table.Column<string>(maxLength: 5, nullable: false),
                     Password = table.Column<string>(nullable: true),
                     Name = table.Column<string>(maxLength: 100, nullable: true),
                     Surname = table.Column<string>(maxLength: 100, nullable: true),
@@ -57,12 +57,16 @@ namespace Context.Migrations
                 name: "Contem",
                 columns: table => new
                 {
-                    IdSubject = table.Column<int>(nullable: false),
-                    IdCourse = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IdCourse = table.Column<int>(nullable: false),
+                    IdSubject = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Contem", x => x.IdSubject);
+                    table.PrimaryKey("PK_Contem", x => x.Id);
+                    table.UniqueConstraint("AK_Contem_IdCourse", x => x.IdCourse);
+                    table.UniqueConstraint("AK_Contem_IdSubject", x => x.IdSubject);
                     table.ForeignKey(
                         name: "FK_Contem_Curso_IdCourse",
                         column: x => x.IdCourse,
@@ -81,12 +85,16 @@ namespace Context.Migrations
                 name: "Lotacao",
                 columns: table => new
                 {
-                    IdCourse = table.Column<int>(nullable: false),
-                    IdUser = table.Column<string>(nullable: true)
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IdUser = table.Column<string>(nullable: false),
+                    IdCourse = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Lotacao", x => x.IdCourse);
+                    table.PrimaryKey("PK_Lotacao", x => x.Id);
+                    table.UniqueConstraint("AK_Lotacao_IdCourse", x => x.IdCourse);
+                    table.UniqueConstraint("AK_Lotacao_IdUser", x => x.IdUser);
                     table.ForeignKey(
                         name: "FK_Lotacao_Curso_IdCourse",
                         column: x => x.IdCourse,
@@ -98,20 +106,24 @@ namespace Context.Migrations
                         column: x => x.IdUser,
                         principalTable: "Usuario",
                         principalColumn: "IdUser",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Matricula",
                 columns: table => new
                 {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IdUser = table.Column<string>(nullable: false),
                     IdSubject = table.Column<int>(nullable: false),
-                    IdUser = table.Column<string>(nullable: true),
                     Grade = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Matricula", x => x.IdSubject);
+                    table.PrimaryKey("PK_Matricula", x => x.Id);
+                    table.UniqueConstraint("AK_Matricula_IdSubject", x => x.IdSubject);
+                    table.UniqueConstraint("AK_Matricula_IdUser", x => x.IdUser);
                     table.ForeignKey(
                         name: "FK_Matricula_Materia_IdSubject",
                         column: x => x.IdSubject,
@@ -123,23 +135,8 @@ namespace Context.Migrations
                         column: x => x.IdUser,
                         principalTable: "Usuario",
                         principalColumn: "IdUser",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Contem_IdCourse",
-                table: "Contem",
-                column: "IdCourse");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Lotacao_IdUser",
-                table: "Lotacao",
-                column: "IdUser");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Matricula_IdUser",
-                table: "Matricula",
-                column: "IdUser");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

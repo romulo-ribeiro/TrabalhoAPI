@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Context.Migrations
 {
     [DbContext(typeof(EscolaContext))]
-    [Migration("20200921165155_InitialCreate")]
+    [Migration("20200923143618_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -66,7 +66,8 @@ namespace Context.Migrations
             modelBuilder.Entity("Context.Models.User", b =>
                 {
                     b.Property<string>("IdUser")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(5)")
+                        .HasMaxLength(5);
 
                     b.Property<DateTime?>("Birthday")
                         .HasColumnType("datetime2");
@@ -96,48 +97,71 @@ namespace Context.Migrations
 
             modelBuilder.Entity("Context.Relations.CourseSubject", b =>
                 {
-                    b.Property<int>("IdSubject")
-                        .HasColumnType("int");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("IdCourse")
                         .HasColumnType("int");
 
-                    b.HasKey("IdSubject");
+                    b.Property<int>("IdSubject")
+                        .HasColumnType("int");
 
-                    b.HasIndex("IdCourse");
+                    b.HasKey("Id");
+
+                    b.HasAlternateKey("IdCourse");
+
+                    b.HasAlternateKey("IdSubject");
 
                     b.ToTable("Contem");
                 });
 
             modelBuilder.Entity("Context.Relations.UserCourse", b =>
                 {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
                     b.Property<int>("IdCourse")
                         .HasColumnType("int");
 
                     b.Property<string>("IdUser")
-                        .HasColumnType("nvarchar(450)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(5)");
 
-                    b.HasKey("IdCourse");
+                    b.HasKey("Id");
 
-                    b.HasIndex("IdUser");
+                    b.HasAlternateKey("IdCourse");
+
+                    b.HasAlternateKey("IdUser");
 
                     b.ToTable("Lotacao");
                 });
 
             modelBuilder.Entity("Context.Relations.UserSubject", b =>
                 {
-                    b.Property<int>("IdSubject")
-                        .HasColumnType("int");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int?>("Grade")
                         .HasColumnType("int");
 
+                    b.Property<int>("IdSubject")
+                        .HasColumnType("int");
+
                     b.Property<string>("IdUser")
-                        .HasColumnType("nvarchar(450)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(5)");
 
-                    b.HasKey("IdSubject");
+                    b.HasKey("Id");
 
-                    b.HasIndex("IdUser");
+                    b.HasAlternateKey("IdSubject");
+
+                    b.HasAlternateKey("IdUser");
 
                     b.ToTable("Matricula");
                 });
@@ -167,7 +191,9 @@ namespace Context.Migrations
 
                     b.HasOne("Context.Models.User", "User")
                         .WithMany("InCourse")
-                        .HasForeignKey("IdUser");
+                        .HasForeignKey("IdUser")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Context.Relations.UserSubject", b =>
@@ -180,7 +206,9 @@ namespace Context.Migrations
 
                     b.HasOne("Context.Models.User", "User")
                         .WithMany("Registered")
-                        .HasForeignKey("IdUser");
+                        .HasForeignKey("IdUser")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
